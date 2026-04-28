@@ -1,0 +1,11 @@
+USE room_booking_system;
+INSERT INTO account VALUES(NULL,'001', 'Ric', 'admin1@email.com', '$argon2id$v=19$m=65536,t=3,p=4$q6lKlwVpZ6MB+WdPmWXrlA$WNOP6jvfmH687DOBThpraAJTK426jV6Q3ZJY27aCgvY', NULL, NULL, 'admin');
+INSERT INTO account VALUES(NULL,'101', 'Xingjie', 'staff1@email.com', '$argon2id$v=19$m=65536,t=3,p=4$q6lKlwVpZ6MB+WdPmWXrlA$WNOP6jvfmH687DOBThpraAJTK426jV6Q3ZJY27aCgvY', NULL, NULL, 'staff');
+INSERT INTO account VALUES(NULL,'102', 'Zhen Yi', 'staff2@email.com', '$argon2id$v=19$m=65536,t=3,p=4$q6lKlwVpZ6MB+WdPmWXrlA$WNOP6jvfmH687DOBThpraAJTK426jV6Q3ZJY27aCgvY', NULL, NULL, 'staff');
+INSERT INTO account VALUES(NULL,'901', 'Keith', 'student1@email.com', '$argon2id$v=19$m=65536,t=3,p=4$q6lKlwVpZ6MB+WdPmWXrlA$WNOP6jvfmH687DOBThpraAJTK426jV6Q3ZJY27aCgvY', NULL, 0, 'student');
+INSERT INTO account VALUES(NULL,'902', 'Louis', 'student2@email.com', '$argon2id$v=19$m=65536,t=3,p=4$q6lKlwVpZ6MB+WdPmWXrlA$WNOP6jvfmH687DOBThpraAJTK426jV6Q3ZJY27aCgvY', NULL, 0, 'student');
+INSERT INTO room VALUES(NULL, 'Golden Ratio', 13, 2000, false);
+INSERT INTO room VALUES(NULL, 'Sea Breeze', 8, 500, true);
+INSERT INTO room VALUES(NULL, 'Grass Wonder', 4, 200, true);
+SELECT * FROM account WHERE 1=1;
+SELECT * FROM room WHERE 1=1;
