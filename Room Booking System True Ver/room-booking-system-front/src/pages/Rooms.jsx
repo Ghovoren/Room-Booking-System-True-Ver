@@ -34,8 +34,19 @@ export default function Rooms() {
       <h1>Rooms</h1>
 
       {rooms.map((r) => (
-        <RoomCard key={r.room_no} room = {r} user = {user}/>
+        <RoomCard room = {r} user = {user}/>
       ))}
+      {user.role ==='staff' || user.role === 'admin' ? (
+          <button style={style.button}>Create New Room</button>
+      ) : null}
     </div>
   );
+}
+
+const style = {
+  button: {
+    width: "100%",
+    height: "40px",
+    margin: "5px"
+  }
 }

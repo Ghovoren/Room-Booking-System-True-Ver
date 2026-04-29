@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useAuth } from "../auth/AuthContext"
+import BookingsCard from "../components/BookingsCard"
 
 export default function Bookings() {
   const { user } = useAuth()
@@ -31,11 +32,7 @@ export default function Bookings() {
       <h1>Bookings</h1>
 
       {bookings.map((b) => (
-        <div key={b.id}>
-          Room: {b.room_no}
-          <br />
-          Date: {b.start_date} - {b.end_date}
-        </div>
+        <BookingsCard booking = {b}/>
       ))}
     </div>
   )

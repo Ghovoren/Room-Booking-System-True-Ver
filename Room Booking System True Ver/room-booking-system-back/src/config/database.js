@@ -155,6 +155,8 @@ return result
 
 export async function getBookingById(id){
     const [result] = await pool.query("SELECT * FROM booking WHERE id = ? ", [id])
+
+    return result
 }
 
 export async function removeBooking(booking) {

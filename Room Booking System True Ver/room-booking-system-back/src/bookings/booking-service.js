@@ -74,7 +74,7 @@ export async function getAllBookings(filters){
             query += "AND user_id = ? "
             params.push(filters.userId)
         }
-        const [result] = await dbQuery(query, params)
+        const result = await dbQuery(query, params)
         return result
     } 
     catch (error) {
