@@ -9,3 +9,4 @@ INSERT INTO room VALUES(NULL, 'Sea Breeze', 8, 500, true);
 INSERT INTO room VALUES(NULL, 'Grass Wonder', 4, 200, true);
 SELECT * FROM account WHERE 1=1;
 SELECT * FROM room WHERE 1=1;
+SELECT * FROM booking WHERE 1=1;

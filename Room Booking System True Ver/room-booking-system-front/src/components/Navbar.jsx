@@ -5,7 +5,7 @@ export default function Navbar() {
   const { user, setUser } = useAuth();
 
   async function handleLogout() {
-    await fetch("http://localhost:3000/logout", {
+    await fetch("http://localhost:3000/auth/logout", {
       method: "POST",
       credentials: "include",
     });

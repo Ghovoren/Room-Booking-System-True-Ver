@@ -16,7 +16,6 @@ import RoleRoute from "./auth/RoleRoute";
 function App() {
   return (
     <>
-      {/* 🌍 ONE NAVBAR FOR ENTIRE APP */}
       <Navbar />
 
       <Routes>

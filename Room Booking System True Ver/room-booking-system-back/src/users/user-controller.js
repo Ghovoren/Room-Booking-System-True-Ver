@@ -94,7 +94,7 @@ export async function getUserByIdController(req, res) {
         if (!result){
             return res.status(404).send('User not Found')
         }
-        return res.status(200).json({result: result})
+        return res.status(200).json({result: result || []})
     }
     catch(error){
         console.error(error)
@@ -128,7 +128,7 @@ export async function getAllUsersController(req, res) {
         if (!result){
             return res.status(400).send('Empty Database')
         }
-        return res.status(200).json({result: result})
+        return res.status(200).json({result: result || []})
     }
     catch(error){
         console.error(error)

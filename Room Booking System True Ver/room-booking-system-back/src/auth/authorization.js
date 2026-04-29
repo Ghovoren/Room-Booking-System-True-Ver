@@ -24,7 +24,7 @@ export const userAuthorization = (req, res, next) => {
     if (!isAdmin && !isStaff && !isOwner){
         console.error('[userAuthorization] Forbidden access attempt', {
             role: auth?.role,
-            target: req.params.publicId,
+            target: req.params.userId,
             user: auth?.publicId
         })
         return res.status(403).send('Not Authorized')

@@ -1,30 +1,40 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
+import RoomCard from "../components/RoomCard"
 
 export default function Rooms() {
   const { user } = useAuth();
   const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/rooms", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then(setRooms);
-  }, []);
+    if (!user) return
+    const url =
+      user.role === "admin" || user.role === "staff"
+        ? "http://localhost:3000/rooms"
+        : `http://localhost:3000/rooms/filter`
+
+    fetch(url, {credentials: "include"})
+      .then((res) => {
+        if(!res.ok){
+          throw new Error('Request Failed')
+        }
+        return res.json()
+      })
+      .then((data) => {
+        setRooms(data.result || [])
+      })
+      .catch((error) => {
+        console.error(error)
+        setRooms([])
+      })
+  }, [user]);
 
   return (
     <div>
       <h1>Rooms</h1>
 
       {rooms.map((r) => (
-        <div key={r.id}>
-          <p>{r.name}</p>
-
-          {user.role === "staff" || user.role === "admin" ? (
-            <button>Edit Room</button>
-          ) : null}
-        </div>
+        <RoomCard key={r.room_no} room = {r} user = {user}/>
       ))}
     </div>
   );

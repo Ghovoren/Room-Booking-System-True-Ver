@@ -76,7 +76,7 @@ export async function getRoomByIdController(req, res) {
         if (!result){
             return res.status(404).json({message:'Room not Found'})
         }
-        return res.status(200).json({result: result})
+        return res.status(200).json({result: result || []})
     }
     catch(error){
         console.error(error)
@@ -109,7 +109,7 @@ export async function getAllRoomsController(req, res) {
         if (!result){
           return res.status(400).json({message:`Error Fetching Data: Empty Database`})
         }
-        return res.status(200).json({result: result})
+        return res.status(200).json({result: result || []})
     }
     catch(error){
         console.error(error)
@@ -125,7 +125,7 @@ export async function getRoomByNameController(req, res){
         if (!result){
             return res.status(400).json({message:'No Room with that Name'})
         }
-        return res.status(200).json({result: result})
+        return res.status(200).json({result: result || []})
     }
     catch(error){
         console.error(error)
@@ -165,7 +165,7 @@ export async function getAvailableRoomsController(req, res){
         if (!result){
             return res.status(400).json({message:'No Rooms Available'})
         }
-        return res.status(200).json({result: result})
+        return res.status(200).json({result: result || []})
     }
     catch(error){
         console.error(error)

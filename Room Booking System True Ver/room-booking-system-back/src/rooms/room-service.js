@@ -10,7 +10,6 @@ import {
 export async function makeRoom(name,capacity,price,operational){
     try{
         const existingRoom = await getRoomByName(name)
-        console.log(existingRoom)
         if (existingRoom){
             throw new Error('Cannot Create Duplicate Rooms')
         }
@@ -83,8 +82,8 @@ export async function getAllRooms(filters){
             query += "AND operational = ? "
             params.push(filters.operational)
         }
-        const rows = await dbQuery(query, params)
-        return rows
+        const result = await dbQuery(query, params)
+        return result
     } 
     catch (error) {
         throw new Error(`Error Fetching Rooms: ${error.message}`)
@@ -132,7 +131,6 @@ export async function getRoomsAvailable(filters){
             query += "AND room_no = ? "
             params.push(filters.id)
         }
-        console.log(filters.name)
         if(filters.name){
             query += "AND name = ? "
             params.push(filters.name)
@@ -153,7 +151,6 @@ export async function getRoomsAvailable(filters){
             query += "AND price <= ? "
             params.push(filters.maxPrice)
         }
-        console.log(query)
         const result = await dbQuery(query, params)
         return result
     }

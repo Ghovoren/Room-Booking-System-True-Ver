@@ -84,13 +84,13 @@ export async function cancelBookingController(req, res){
 
 export async function getBookingsByUserIdController(req, res) {
     try{
-        const userId = normalizeId(req.params.userId)
+        const userId = normalizeUserId(req.params.userId)
         let { } = req.query
         const result = await getBookingsWithUserId(userId)
         if (!result){
             return res.status(404).json({message:'Booking not Found'})
         }
-        return res.status(200).json({result: result})
+        return res.status(200).json({result: result || []})
     }
     catch(error){
         console.error(error)

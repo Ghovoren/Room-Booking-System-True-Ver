@@ -27,12 +27,22 @@ export function normalizeDate(input) {
 
 export async function checkOverlap(start,end, roomNo){
     try{
+        if(formattedDate(start) !== formattedDate(end)){
+            throw new Error('No Cross / Multiple Day Booking allowed')
+        }
+        if(start.getHours() < 8 || end.getHours() > 20){
+            throw new Error('Rooms are only available through 08:00 AM - 08:00 PM')
+        }
         const result = await dbQuery("SELECT 1 FROM booking WHERE start_date < ? AND end_date > ? AND room_no = ? ",[end,start, roomNo])
         return result.length > 0
     }
     catch(error){
         throw new Error(`Overlap Checker Error: ${error.message}`)
     }
+}
+
+function formattedDate(date){
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
 }
 
 export async function checkRoom(roomNo){

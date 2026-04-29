@@ -12,7 +12,7 @@ export default function Register() {
   async function handleRegister(e) {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:3000/register", {
+    const res = await fetch("http://localhost:3000/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

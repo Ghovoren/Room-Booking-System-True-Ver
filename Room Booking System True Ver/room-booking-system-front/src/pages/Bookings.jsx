@@ -1,20 +1,30 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../auth/AuthContext";
+import { useEffect, useState } from "react"
+import { useAuth } from "../auth/AuthContext"
 
 export default function Bookings() {
-  const { user } = useAuth();
-  const [bookings, setBookings] = useState([]);
+  const { user } = useAuth()
+  const [bookings, setBookings] = useState([])
 
   useEffect(() => {
     const url =
       user.role === "admin" || user.role === "staff"
         ? "http://localhost:3000/bookings"
-        : `http://localhost:3000/bookings?userId=${user.id}`;
-
+        : `http://localhost:3000/bookings/${user.publicId}`
     fetch(url, { credentials: "include" })
-      .then((res) => res.json())
-      .then(setBookings);
-  }, [user]);
+      .then((res) => {
+        if (!res.ok) throw new Error('Request Failed')
+        return res.json()
+      })
+      .then((data) => {
+        if (data){
+          setBookings(data.result || [])
+        }
+      })
+      .catch((error) => {
+        console.error(error)  
+        setBookings([])
+      })
+  }, [user])
 
   return (
     <div>
@@ -22,11 +32,11 @@ export default function Bookings() {
 
       {bookings.map((b) => (
         <div key={b.id}>
-          Room: {b.room}
+          Room: {b.room_no}
           <br />
-          Date: {b.date}
+          Date: {b.start_date} - {b.end_date}
         </div>
       ))}
     </div>
-  );
+  )
 }
