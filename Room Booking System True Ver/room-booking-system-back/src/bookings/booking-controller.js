@@ -6,6 +6,8 @@ import {
     getBookingWithId
 } from './booking-service.js'
 
+import { removeBooking } from '../config/database.js'
+
 import { normalizeAmountIntoCents, normalizeId, normalizeUserId } from '../utils/data-validations.js'
 import { normalizeDate } from './booking-data-validations.js'
 
@@ -73,7 +75,10 @@ export async function getAllBookingsController (req, res){
 export async function cancelBookingController(req, res){
     try{
         const id = normalizeId(req.params.id)
-        const result = await removeBooking(id)
+        console.log(id)
+        const [booking] = await getBookingWithId(id)
+        console.log(booking)
+        const result = await removeBooking(booking)
         return res.status(200).json({result: result})
     }
     catch(error){

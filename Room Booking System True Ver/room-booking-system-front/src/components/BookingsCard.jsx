@@ -1,9 +1,38 @@
-export default function BookingsCard({booking}){
+import { useEffect, useState } from "react";
+import { useAuth } from "../auth/AuthContext";
+
+export default function BookingsCard({booking, onCancel}){
+    const { user } = useAuth()
+    console.log(booking)
+
+
+
+    async function cancelBooking(id) {
+        const url = `http://localhost:3000/bookings/${user.publicId}/${id}`
+        console.log(url)
+        
+        
+
+        try{
+            const res = await fetch(url, {
+                method: "DELETE",
+                credentials: "include"
+            })
+            if (!res.ok) {
+                throw new Error('Request Failed')
+            }
+            onCancel(id)
+        }
+        catch(error){
+            console.error(error)
+        }
+    }
+
     return(
         <div key={booking.id}>
             <p>Room: {booking.room_no}</p>
             <p>Date: {formatDate(booking.start_date)} - {getTime(booking.end_date)}</p>
-            <button>Cancel Booking</button>
+            <button onClick={() => cancelBooking(booking.id)}>Cancel Booking</button>
         </div>
     )
 }

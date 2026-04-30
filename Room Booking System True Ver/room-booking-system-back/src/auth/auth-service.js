@@ -11,7 +11,7 @@ export async function logInUser(email, password) {
             throw new Error('Invalid Email')
         }
         if (await passwordMatched(user,password)){
-            const token = jwt.sign({ publicId: user.account_id , role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' })
+            const token = jwt.sign({ publicId: user.account_id, name: user.name, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' })
             return token
         }
         else{

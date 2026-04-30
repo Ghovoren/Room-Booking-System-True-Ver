@@ -5,6 +5,10 @@ import BookingsCard from "../components/BookingsCard"
 export default function Bookings() {
   const { user } = useAuth()
   const [bookings, setBookings] = useState([])
+  
+  function handleCancel(id) {
+            setBookings(prev => prev.filter(b => b.id !== id))
+        }
 
   useEffect(() => {
     const url =
@@ -18,6 +22,7 @@ export default function Bookings() {
       })
       .then((data) => {
         if (data){
+          console.log(data)
           setBookings(data.result || [])
         }
       })
@@ -26,13 +31,13 @@ export default function Bookings() {
         setBookings([])
       })
   }, [user])
-
+  
   return (
     <div>
       <h1>Bookings</h1>
 
       {bookings.map((b) => (
-        <BookingsCard booking = {b}/>
+        <BookingsCard booking = {b} onCancel={handleCancel}/>
       ))}
     </div>
   )

@@ -56,7 +56,9 @@ export default function RoomCard({room, user}){
             </div>
             <div style={style.rightColumn}>
                 <img src="../../public/meeting-room-design-6_xsvlec.jpg" alt="Room Image" style={style.image}/>
-                <button style={style.button}>Change Photo</button>
+                {user.role === "staff" || user.role === "admin" ? (
+                    <button style={style.button}>Change Photo</button>
+                ) : null}
             </div>
         </div>
     )

@@ -14,8 +14,8 @@ const router = express.Router()
 
 router.use(protect)
 router.post('/', bookRoomController)
+router.delete('/:userId/:id', userAuthorization, cancelBookingController)
 router.get('/:userId' , userAuthorization, getBookingsByUserIdController)
-router.delete('/:id', userAuthorization, cancelBookingController)
 router.get('/', staffAuthorization, getAllBookingsController)
 
 

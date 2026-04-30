@@ -59,7 +59,7 @@ return result[0] || null
 }
 
 export async function getPasswordfromAccount(email){
-    const [result] = await pool.query("SELECT account_id, role, password FROM account WHERE email = ?", [email])
+    const [result] = await pool.query("SELECT account_id, name, role, password FROM account WHERE email = ?", [email])
     return result[0] || null
 }
 
@@ -166,7 +166,7 @@ export async function removeBooking(booking) {
         if (refund.affectedRows === 0){
             throw new Error ('Refund Error')
         }
-        const [result] = await pool.query("DELETE FROM booking WHERE id = ?", [id])
+        const [result] = await pool.query("DELETE FROM booking WHERE id = ?", [booking.id])
         if (result.affectedRows === 0){
             throw new Error('Deletion Error')
         }
