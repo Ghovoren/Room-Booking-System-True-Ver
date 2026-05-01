@@ -94,6 +94,7 @@ export async function getUserByIdController(req, res) {
         if (!result){
             return res.status(404).send('User not Found')
         }
+        console.log(result)
         return res.status(200).json({result: result || []})
     }
     catch(error){
@@ -157,7 +158,7 @@ export async function depositController(req, res) {
 
 export async function withdrawController(req, res) {
     try{
-        const publicId = req.params.userId
+        let publicId = req.params.userId
         publicId = normalizeUserId(publicId)
         const { withdrawAmount } = req.body
         const amount = normalizeAmountIntoCents(withdrawAmount)

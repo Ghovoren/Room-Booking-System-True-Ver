@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
-import RoomCard from "../components/RoomCard"
+import RoomCard from "../rooms/RoomCard.jsx"
+import { apiFetch } from "../auth/ApiFetch.jsx"
 
 export default function Rooms() {
   const { user } = useAuth();
@@ -13,7 +14,7 @@ export default function Rooms() {
         ? "http://localhost:3000/rooms"
         : `http://localhost:3000/rooms/filter`
 
-    fetch(url, {credentials: "include"})
+    apiFetch(url, {credentials: "include"})
       .then((res) => {
         if(!res.ok){
           throw new Error('Request Failed')
@@ -34,9 +35,9 @@ export default function Rooms() {
       <h1>Rooms</h1>
 
       {rooms.map((r) => (
-        <RoomCard room = {r} user = {user}/>
+        <RoomCard key={r.room_no} room = {r} user = {user} setRooms={setRooms}/>
       ))}
-      {user.role ==='staff' || user.role === 'admin' ? (
+      {user?.role ==='staff' || user?.role === 'admin' ? (
           <button style={style.button}>Create New Room</button>
       ) : null}
     </div>

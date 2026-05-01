@@ -12,6 +12,8 @@ import Users from "./pages/Users";
 import DashboardLayout from "./layouts/DashboardLayout";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import RoleRoute from "./auth/RoleRoute";
+import User from "./pages/User";
+import BookRoom from "./rooms/BookRoom.jsx"
 
 function App() {
   return (
@@ -33,7 +35,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="/rooms/:roomNo/book"
+          element={
+            <ProtectedRoute>
+              <BookRoom/>
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/bookings"
           element={
@@ -49,6 +58,14 @@ function App() {
             <RoleRoute allowedRoles={["admin", "staff"]}>
               <Users />
             </RoleRoute>
+          }
+        />
+        <Route
+          path="/user/:id"
+          element={
+              <ProtectedRoute>
+                <User />
+              </ProtectedRoute>
           }
         />
       </Routes>

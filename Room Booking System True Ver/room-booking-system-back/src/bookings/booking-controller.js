@@ -75,9 +75,7 @@ export async function getAllBookingsController (req, res){
 export async function cancelBookingController(req, res){
     try{
         const id = normalizeId(req.params.id)
-        console.log(id)
         const [booking] = await getBookingWithId(id)
-        console.log(booking)
         const result = await removeBooking(booking)
         return res.status(200).json({result: result})
     }

@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
+import { apiFetch } from "../auth/ApiFetch.jsx"
 
 export default function BookingsCard({booking, onCancel}){
     const { user } = useAuth()
-    console.log(booking)
-
-
 
     async function cancelBooking(id) {
         const url = `http://localhost:3000/bookings/${user.publicId}/${id}`
-        console.log(url)
         
         
 
         try{
-            const res = await fetch(url, {
+            const res = await apiFetch(url, {
                 method: "DELETE",
                 credentials: "include"
             })

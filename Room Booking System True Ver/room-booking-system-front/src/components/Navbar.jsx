@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { apiFetch } from "../auth/ApiFetch.jsx"
 
 export default function Navbar() {
   const { user, setUser } = useAuth();
 
   async function handleLogout() {
-      await fetch("http://localhost:3000/auth/logout", {
+      await apiFetch("http://localhost:3000/auth/logout", {
       method: "POST",
       credentials: "include",
     });
@@ -47,7 +48,7 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <Link to={`/user/${user.id}`} style={styles.link}>
+            <Link to={`/user/${user.publicId}`} style={styles.link}>
               {user.name}
             </Link>
 

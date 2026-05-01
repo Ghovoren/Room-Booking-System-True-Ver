@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../auth/ApiFetch.jsx"
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,7 +12,7 @@ export default function Login() {
   async function handleLogin(e) {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:3000/auth/login", {
+    const res = await apiFetch("http://localhost:3000/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -19,8 +20,8 @@ export default function Login() {
     });
 
     if (res.ok) {
-      // fetch user after login
-      const userRes = await fetch("http://localhost:3000/auth/me", {
+      // apiFetch user after login
+      const userRes = await apiFetch("http://localhost:3000/auth/me", {
         credentials: "include",
       });
       const user = await userRes.json();
