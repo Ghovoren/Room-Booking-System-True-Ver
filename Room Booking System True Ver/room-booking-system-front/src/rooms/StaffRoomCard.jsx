@@ -1,25 +1,26 @@
-import { useState } from "react";
-import RoomCardBase from "./RoomCardBase.jsx";
+import { useState } from "react"
+import RoomCardBase from "./RoomCardBase.jsx"
 import {style} from "./style.jsx"
-import { apiFetch } from "../auth/ApiFetch.jsx";
+import { apiFetch } from "../auth/ApiFetch.jsx"
 
 export default function StaffRoomCard({ room, setRooms }) {
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(false)
     const [form, setForm] = useState({
         name: room.name,
         capacity: room.capacity,
-        price: (room.price / 100).toFixed(2),
-    });
+        price: room.price,
+    })
+    const [availability, setAvailability] = useState(room.operational)
 
     async function handleSubmit(e) {
-        e.preventDefault();
+        e.preventDefault()
 
         const updatedRoom = {
             ...room,
             name: form.name,
             capacity: Number(form.capacity),
-            price: Math.round(Number(form.price) * 100),
-        };
+            price: form.price,
+        }
 
         const res = await apiFetch(
             `http://localhost:3000/rooms/${room.room_no}`,
@@ -27,19 +28,58 @@ export default function StaffRoomCard({ room, setRooms }) {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({name: updatedRoom.name, capacity: updatedRoom.capacity, price : (updatedRoom.price/100)}),
+                body: JSON.stringify(updatedRoom),
             }
-        );
+        )
 
-        if (!res.ok) throw new Error("Request failed");
+        if (!res.ok) throw new Error("Request failed")
 
         setRooms(prev =>
             prev.map(r =>
                 r.room_no === room.room_no ? updatedRoom : r
             )
-        );
+        )
 
-        setIsEditing(false);
+        setIsEditing(false)
+    }
+    async function updateAvailability(e){
+        e.preventDefault()
+        const nextValue = !availability
+        setAvailability(nextValue)
+        try {
+            const res = await apiFetch(`http://localhost:3000/rooms/${room.room_no}/availability`,{
+                method : "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({operational : nextValue})
+            })
+        }
+        catch(error){
+            console.error(error)
+            setAvailability(prev => !prev)
+            throw new Error('Request Failed')
+        }
+    }
+    
+    async function handleDelete(e){
+        e.preventDefault()
+
+        try{
+            const res = await apiFetch(`http://localhost:3000/rooms/${room.room_no}`,
+                {
+                    method: "DELETE",
+                    credentials: "include"
+                }
+            )
+            if (!res.ok){
+                throw new Error('Request Failed')
+            }
+            setRooms(prev => prev.filter(r => r.room_no !== room.room_no))
+        }
+        catch(error){
+            console.error(error)
+            throw new Error('Request Failed')
+        }
     }
 
     return (
@@ -83,8 +123,14 @@ export default function StaffRoomCard({ room, setRooms }) {
                     <>
                         <RoomCardBase room={room} />
 
+                        <button onClick={updateAvailability} style={style.button}>
+                            {availability ? "Available" : "Not Available"}
+                        </button>
                         <button onClick={() => setIsEditing(true)} style={style.button}>
                             Edit Room
+                        </button>
+                        <button onClick={handleDelete} style={style.button}>
+                            Remove Room
                         </button>
                     </>
                 )}
@@ -95,5 +141,5 @@ export default function StaffRoomCard({ room, setRooms }) {
                 <button style={style.button}>Change Photo</button>
             </div>
         </div>
-    );
+    )
 }

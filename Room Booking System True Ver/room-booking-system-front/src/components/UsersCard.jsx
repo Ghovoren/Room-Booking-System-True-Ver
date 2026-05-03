@@ -1,4 +1,10 @@
-export default function UsersCard({user}){
+import { apiFetch } from "../auth/ApiFetch"
+
+export default function UsersCard({user, onDelete}){
+
+    const handleDelete = () => {
+        onDelete(user.account_id)
+    }
     return(
         <div key={user.account_id} style={style.card}>
             <p>ID: {user.account_id}</p>
@@ -6,7 +12,7 @@ export default function UsersCard({user}){
             <p>Email: {user.email}</p>
             <p>Phone: {user.phone || "N/A"}</p>
             <p>Role: {user.role}</p>
-            <button style={style.button}>Delete Account</button>
+            <button style={style.button} onClick={handleDelete} >Delete Account</button>
         </div>
     )
 }

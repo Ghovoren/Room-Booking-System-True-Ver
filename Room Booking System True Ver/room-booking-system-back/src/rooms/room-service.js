@@ -14,7 +14,7 @@ export async function makeRoom(name,capacity,price,operational){
             throw new Error('Cannot Create Duplicate Rooms')
         }
         const result = await createRoom(name,capacity,price,operational)
-        return result
+        return getRoomById(result.insertId)
     }
     catch(error){
         throw new Error(`Database Insert Error: ${error.message}`)

@@ -22,6 +22,7 @@ export default function User() {
     })
 
     if (!res.ok){
+      alert(`Error: ${error.message}`)
       throw new Error('Request Failed')
     }
     updateBalance()
@@ -40,7 +41,9 @@ export default function User() {
     })
 
     if (!res.ok){
+      alert(`Error: ${error.message}`)
       throw new Error('Request Failed')
+      
     }
     updateBalance()
     
