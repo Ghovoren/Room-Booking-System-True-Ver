@@ -67,6 +67,7 @@ export default function BookRoom() {
                     required
                 />
 
+                {/* ⏰ End time */}
                 <label>End Time</label>
                 <input
                     type="time"

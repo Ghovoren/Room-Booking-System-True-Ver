@@ -29,8 +29,7 @@ export default function Bookings() {
         }
       })
       .catch((error) => {
-        console.error(error)
-        alert(`Error: ${error.message}`)  
+        console.error(error)  
         setBookings([])
       })
     apiFetch(`http://localhost:3000/users/${user.publicId}`, {credentials: "include"})
@@ -57,7 +56,7 @@ export default function Bookings() {
         <Link to="/rooms">Create a New Booking</Link>
       </>)}
       {bookings.map((b) => (
-        <BookingsCard key = {b.id} booking = {b} onCancel={handleCancel}/>
+        <BookingsCard booking = {b} onCancel={handleCancel}/>
       ))}
     </div>
   )

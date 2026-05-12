@@ -27,11 +27,6 @@ export default function BookingsCard({booking, onCancel}){
 
     return(
         <div key={booking.id}>
-            { (user.role === 'staff' || user.role === 'admin') && (
-                <>
-                    <p>Student No: {booking.user_id}</p>
-                </>
-            )}
             <p>Room: {booking.room_no}</p>
             <p>Date: {formatDate(booking.start_date)} - {getTime(booking.end_date)}</p>
             <button onClick={() => cancelBooking(booking.id)}>Cancel Booking</button>

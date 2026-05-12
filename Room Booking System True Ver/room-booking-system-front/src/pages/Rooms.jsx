@@ -2,18 +2,10 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import RoomCard from "../rooms/RoomCard.jsx"
 import { apiFetch } from "../auth/ApiFetch.jsx"
-import RoomCardForm from "../rooms/CreateRoom.jsx";
 
 export default function Rooms() {
   const { user } = useAuth();
-  const [rooms, setRooms] = useState([])
-  const [showForm, setShowForm] = useState(false)
-
-  const handleAddRoom = (newRoom) => {
-    setRooms(prev => [...prev, newRoom])
-    setShowForm(false)
-  }
-
+  const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
     if (!user) return
@@ -34,7 +26,6 @@ export default function Rooms() {
       })
       .catch((error) => {
         console.error(error)
-        alert(`Error: ${error.message}`)
         setRooms([])
       })
   }, [user]);
@@ -47,12 +38,7 @@ export default function Rooms() {
         <RoomCard key={r.room_no} room = {r} user = {user} setRooms={setRooms}/>
       ))}
       {user?.role ==='staff' || user?.role === 'admin' ? (
-        <>
-          {showForm && <RoomCardForm onCreate={handleAddRoom}/>}
-          <button onClick={() => setShowForm(prev => !prev)}>
-            Create New Room
-          </button>
-        </>
+          <button style={style.button}>Create New Room</button>
       ) : null}
     </div>
   );

@@ -49,6 +49,7 @@ export async function getAllUsers(filters){
             params.push(filters.name)
         }
         if (filters.email){
+            console.log(filters.email)
             query += "AND email = ? "
             params.push(filters.email)
         }
