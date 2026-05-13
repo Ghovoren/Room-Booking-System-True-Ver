@@ -19,17 +19,39 @@ export default function Users() {
       }
       catch(error) {
           console.error(error)
+          alert(`Error: ${error.message}`)
           setUsers([])
       }
     }
     fetchUsers()
   }, []);
 
+
+  const handleDelete = async (id) => {
+        try{
+            const res = await apiFetch(`http://localhost:3000/users/${id}`,
+                {
+                    method: "DELETE",
+                    credentials: "include"
+                }
+            )
+            if (!res.ok){
+                throw new Error('Request Failed')
+            }   
+            setUsers(prev => prev.filter(user => user.account_id !== id));
+        }
+        catch(error){
+            alert(`Error: ${error.message}`)
+            throw new Error('Error Request Failed')
+            
+        } 
+    }
+
   return (
     <div>
       <h1>All Users</h1>
-      {users.map((u) => (
-        <UsersCard key={u.account_id}user={u}/>
+      {users.map((user) => (
+        <UsersCard key={user.account_id} user={user} onDelete={handleDelete}/>
       ))}
     </div>
   );

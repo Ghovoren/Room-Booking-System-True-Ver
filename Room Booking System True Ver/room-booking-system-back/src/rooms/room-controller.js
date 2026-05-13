@@ -19,8 +19,9 @@ export async function createRoomController(req, res) {
         capacity = normalizeCapacity(capacity)
         price = normalizeAmountIntoCents(price)
         operational = normalizeOperational(operational)
-        await makeRoom(name, capacity, price, operational)
-        return res.status(200).json({message:'Room Created'})
+        const result = await makeRoom(name, capacity, price, operational)
+        console.log(result)
+        return res.status(200).json({message:'Room Created', result: result})
     } catch (error) {
         console.error(error)
       return res.status(500).json({message:'Error Registering'})

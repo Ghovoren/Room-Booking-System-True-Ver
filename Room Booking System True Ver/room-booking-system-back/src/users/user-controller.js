@@ -94,7 +94,6 @@ export async function getUserByIdController(req, res) {
         if (!result){
             return res.status(404).send('User not Found')
         }
-        console.log(result)
         return res.status(200).json({result: result || []})
     }
     catch(error){
