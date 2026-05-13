@@ -7,8 +7,8 @@ DROP TABLE IF EXISTS room;
 
 CREATE TABLE account
 (
-	id INTEGER AUTO_INCREMENT,
-	account_id VARCHAR(3),
+	id INTEGER AUTO_INCREMENT NOT NULL,
+	account_id VARCHAR(3) NOT NULL,
 	name VARCHAR(18) NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -29,27 +29,50 @@ INSERT INTO account VALUES(NULL,'102', 'Zhen Yi', 'staff2@email.com', '1234', NU
 
 CREATE TABLE room
 (
-	room_no INTEGER AUTO_INCREMENT,
-    name VARCHAR(255),
+	room_no INTEGER AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL,
     capacity INTEGER NOT NULL,
     price FLOAT(10,2) NOT NULL,
     operational BOOLEAN NOT NULL,
+    promo_code INTEGER,
     CONSTRAINT room_pk PRIMARY KEY (room_no),
     CONSTRAINT room_ck UNIQUE (name),
+    CONSTRAINT room_fk FOREIGN KEY (promo_code) REFERENCES promo_codes(id),
     CHECK(price >= 0),
     CHECK (capacity > 0)
 );
 CREATE TABLE booking
 (
-	ref_no INTEGER AUTO_INCREMENT,
+	ref_no INTEGER AUTO_INCREMENT NOT NULL,
+    start_date DATETIME NOT NULL,
+    end_date DATETIME NOT NULL,
     total_cost INTEGER NOT NULL,
-    booking_date DATETIME NOT NULL,
     room_no INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     CONSTRAINT booking_pk PRIMARY KEY (ref_no),
-    CONSTRAINT booking_ck UNIQUE (booking_date, room_no),
+    CONSTRAINT booking_ck UNIQUE (start_date, end_date, room_no),
     CONSTRAINT booking_fk1 FOREIGN KEY (room_no) REFERENCES room(room_no) ON DELETE CASCADE,
-    CONSTRAINT booking_fk2 FOREIGN KEY (user_id) REFERENCES account(id)
+    CONSTRAINT booking_fk2 FOREIGN KEY (user_id) REFERENCES account(id),
+    CHECK(start_date < end_date)
+);
+
+CREATE TABLE promo_codes
+(
+	id INTEGER AUTO_INCREMENT NOT NULL,
+    promotion VARCHAR(255) NOT NULL,
+    discount INTEGER NOT NULL,
+    CONSTRAINT promo_pk PRIMARY KEY (id),
+    CONSTRAINT promo_ck1 UNIQUE (promotion),
+    CONSTRAINT discount_check CHECK(discount > 0)
+);
+
+CREATE TABLE room_promo
+(
+	room_no INTEGER NOT NULL,
+    promo INTEGER NOT NULL,
+    CONSTRAINT room_promo_pk PRIMARY KEY (room_no,promo),
+    CONSTRAINT room_promo_fk1 FOREIGN KEY (room_no) REFERENCES room(room_no),
+    CONSTRAINT room_promo_fk2 FOREIGN KEY (promo) REFERENCES promo_codes(id)
 );
 -- Book Room
 -- INSERT INTO booking VALUES(refNo,cost,bookedDate,roomNo,userId);

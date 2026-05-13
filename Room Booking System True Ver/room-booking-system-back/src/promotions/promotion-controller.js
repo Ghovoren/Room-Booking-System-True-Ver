@@ -4,41 +4,30 @@ import {
     getAllBookings,
     getBookingsWithUserId,
     getBookingWithId
-} from './booking-service.js'
+} from './promotion-service.js'
 
-import { removeBooking } from '../config/database.js'
+import { removePromotion } from '../config/database.js'
 
-import { normalizeAmountIntoCents, normalizeId, normalizeUserId } from '../utils/data-validations.js'
-import { normalizeDate } from './booking-data-validations.js'
-
-export async function bookRoomController(req, res) {
+export async function createPromotionController(req, res) {
     try {
-        let userId = req.user.publicId
-        let { startDate, endDate, roomNo , promoCode} = req.body
-        if (!userId || !startDate || !endDate || !roomNo){
+        let { promoName, discount } = req.body
+        if (!promoName || !discount){
             return res.status(400).json({message:"Error Registering: Invalid Data"})
         }
         const filters = {}
-        startDate = normalizeDate(startDate)
-        filters.startDate = startDate
-        endDate = normalizeDate(endDate)
-        filters.endDate = endDate
-        roomNo = normalizeId(roomNo)
-        filters.roomNo = roomNo
-        userId = normalizeUserId(userId)
-        filters.userId = userId
-        if (promoCode) {
-            filters.promoCode = promoCode
-        }
-        await bookRoom(filters)
-        return res.status(200).json({message:'Booking Created'})
+        validatePromotionName(promoName)
+        filters.promoName = promoName
+        discount = normalizeDiscount(discount)
+        filters.discount = discount
+        await createPromotion(filters)
+        return res.status(200).json({message:'Promotion Created'})
     } catch (error) {
         console.error(error)
       return res.status(500).json({message:'Error Registering'})
     }
 }
 
-export async function getAllBookingsController (req, res){
+export async function getAllPromotionsController (req, res){
     try{
         let { startDate, endDate, minTotalCost, maxTotalCost, roomNo, userId } = req.query
         const filters = {}

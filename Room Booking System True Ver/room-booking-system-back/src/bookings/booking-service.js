@@ -7,7 +7,8 @@ import {
     createBooking,
     getBookingById,
     removeBooking,
-    getBookingsByUserId
+    getBookingsByUserId,
+    getDiscountByCode
 } from '../config/database.js'
 import { depositBalance, withdrawBalance } from '../users/user-service.js'
 import { checkOverlap, checkRoom, checkUser } from './booking-data-validations.js'
@@ -26,7 +27,11 @@ export async function bookRoom(filters){
         if (!validUser){
             throw new Error('User does not exist or not allowed to book')
         }
-        filters.totalCost = getTotalCost(filters.startDate,filters.endDate,validRoom)
+        const discount = await getDiscountByCode(filters.promoCode)
+        if (filters.promoCode && !discount){
+            throw new Error('Invalid Promo Code')
+        }
+        filters.totalCost = getTotalCost(filters.startDate,filters.endDate,validRoom, discount)
         if (filters.totalCost > validUser.balance){
             throw new Error('Insufficient Funds')
         }
@@ -40,10 +45,14 @@ export async function bookRoom(filters){
     }
 }
 
-function getTotalCost(startDate, endDate, room){
+function getTotalCost(startDate, endDate, room, discount = 0){
     const milliseconds = endDate - startDate
     const hours = Math.floor(milliseconds / (1000 * 60 * 60))
-    return room.price * hours
+    let cost = room.price * hours
+    if (discount) {
+        cost *= (100 - discount)/100;
+    }
+    return cost
 }
 
 export async function getAllBookings(filters){

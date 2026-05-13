@@ -16,6 +16,17 @@ const [result] = await pool.query("INSERT INTO account (account_id, name, email,
 return result
 }
 
+export async function lastStudentId(){
+    const [result] = await pool.query("SELECT account_id FROM account WHERE role = 'student' ORDER BY account_id DESC LIMIT 1")
+    return result[0] ? result[0].account_id : '900'
+}
+
+export async function lastStaffId(){
+    const [result] = await pool.query("SELECT account_id FROM account WHERE role = 'staff' ORDER BY account_id DESC LIMIT 1")
+    return result[0] ? result[0].account_id : '100'
+}
+
+
 export async function updateAccount(id, name, email, phone = null) {
 const [result] = await pool.query("UPDATE account SET name = ?, email = ?, phone = ? WHERE account_id = ?", [name, email, phone, id])
 
@@ -186,4 +197,9 @@ export async function removeBooking(booking) {
 export async function dbQuery(query,params){
     const [result] = await pool.query(query, params)
     return result
+}
+
+export async function getDiscountByCode(promoCode){
+    const [result] = await pool.query("SELECT discount FROM promo_codes WHERE promotion = ?", [promoCode])
+    return result[0] ? result[0].discount : null
 }

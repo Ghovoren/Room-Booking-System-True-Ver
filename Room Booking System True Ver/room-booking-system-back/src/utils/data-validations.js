@@ -34,6 +34,35 @@ export function validateRoomName(roomName){
     }
 }
 
+export function validatePromotionName(promotionName){
+    try{
+        const promotionNameRegex = /^[A-Za-z0-9\s'-]+$/;
+        if (!promotionName || !promotionName.trim()) {
+            throw new Error("Promotion Name is required");
+        }
+        if (!promotionNameRegex.test(promotionName)){
+            throw new Error('Promotion Name Regex Test Failed')
+        }
+
+    }
+    catch(error){
+        throw new Error(`Data Validation Error: ${error.message}`)
+    }
+}
+
+export function normalizeDiscount(discount){
+    try{
+        const num = Number(discount.replace('%',''))
+        if (!Number.isFinite(num) || num < 0 || num > 100) {
+            throw new Error('Discount must be a number between 0 and 100')
+        }
+        return num
+    }
+    catch(error){
+        throw new Error(`Data Validation Error: ${error.message}`)
+    }
+}
+
 export function validateRole(role){
     try{
         if (USER_ROLES.includes(role)){
