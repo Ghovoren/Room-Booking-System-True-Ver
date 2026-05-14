@@ -1,6 +1,7 @@
 import mysql from 'mysql2'
 import dotenv from 'dotenv'
 import { depositBalance } from '../users/user-service.js'
+import e from 'express'
 dotenv.config()
 
 const pool =mysql.createPool({
@@ -55,6 +56,11 @@ export async function deleteAccount(id) {
 const [result] = await pool.query("DELETE FROM account WHERE account_id = ? AND (balance = 0 OR balance IS NULL)", [id])
 
 return result
+}
+
+export async function getAccountByAccountId(accountId){
+    const [result] = await pool.query("SELECT * FROM account WHERE id = ?", [accountId])
+    return result[0] || null
 }
 
 export async function getAccountById(id){
@@ -167,7 +173,7 @@ return result
 export async function getBookingById(id){
     const [result] = await pool.query("SELECT * FROM booking WHERE id = ? ", [id])
 
-    return result
+    return result[0] || null
 }
 
 export async function removeBooking(booking) {
@@ -199,7 +205,41 @@ export async function dbQuery(query,params){
     return result
 }
 
-export async function getDiscountByCode(promoCode){
-    const [result] = await pool.query("SELECT discount FROM promo_codes WHERE promotion = ?", [promoCode])
+//==================================================================================================================
+
+export async function getDiscountByName(promoName){
+    const [result] = await pool.query("SELECT discount FROM promo_codes WHERE name = ?", [promoName])
     return result[0] ? result[0].discount : null
+}
+
+export async function getDiscountById(promoId){
+    const [result] = await pool.query("SELECT discount FROM promo_codes WHERE id = ?", [promoId])
+    return result[0] ? result[0].discount : null
+}
+
+export async function getPromotionByName(promoName){
+    const [result] = await pool.query("SELECT * FROM promo_codes WHERE name = ?", [promoName])
+    return result[0] || null
+}
+
+export async function getPromotionByPromoId(promoId){
+    const [result] = await pool.query("SELECT * FROM promo_codes WHERE id = ?", [promoId])
+    return result[0] || null
+}
+
+export async function getPromotions(){
+    const [result] = await pool.query("SELECT * FROM promo_codes")
+    return result
+}
+export async function createPromotion(promoName, discount){
+    const [result] = await pool.query("INSERT INTO promo_codes (name, discount) VALUES (?, ?)", [promoName, discount])
+    return result
+}
+export async function updatePromotion(id, newName, discount){
+    const [result] = await pool.query("UPDATE promo_codes SET name = ?, discount = ? WHERE id = ?", [newName, discount, id])
+    return result
+}
+export async function removePromotion(id){
+    const [result] = await pool.query("DELETE FROM promo_codes WHERE id = ?", [id])
+    return result
 }

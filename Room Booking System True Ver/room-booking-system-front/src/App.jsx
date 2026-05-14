@@ -14,6 +14,7 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 import RoleRoute from "./auth/RoleRoute";
 import User from "./pages/User";
 import BookRoom from "./rooms/BookRoom.jsx"
+import Promotions from "./pages/Promotions.jsx";
 
 function App() {
   return (
@@ -68,6 +69,14 @@ function App() {
               </ProtectedRoute>
           }
         />
+        <Route
+          path="/promotions"
+          element={
+            <RoleRoute allowedRoles={["admin", "staff"]}>
+              <Promotions />
+            </RoleRoute>
+          }
+         />
       </Routes>
     </>
   );

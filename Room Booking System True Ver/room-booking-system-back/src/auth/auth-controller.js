@@ -13,7 +13,7 @@ export async function registerUserController(req, res) {
         if (phone) {
             validatePhone(phone)
         }
-        //validatePassword(password)
+        validatePassword(password)
         const result = await registerUser(name, normalizedEmail, password, phone || null)
       return res.status(200).json({message: 'User registered', result: result})
     } catch (error) {  

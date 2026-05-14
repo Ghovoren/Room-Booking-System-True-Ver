@@ -1,5 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import RoomCardBase from "./RoomCardBase.jsx"
+import PromotionCard from "./PromotionCard.jsx"
 import {style} from "./style.jsx"
 import { apiFetch } from "../auth/ApiFetch.jsx"
 
@@ -8,18 +9,41 @@ export default function StaffRoomCard({ room, setRooms }) {
     const [form, setForm] = useState({
         name: room.name,
         capacity: room.capacity,
-        price: room.price,
+        price: room.price/100,
     })
+    const [promotions, setPromotions] = useState([])
     const [availability, setAvailability] = useState(room.operational)
+    
+    useEffect(() => {
+        const fetchPromotions = async () => {
+            try {
+                const res = await apiFetch(`http://localhost:3000/rooms/${room.room_no}/promotions`, {
+                    method: "GET",
+                    credentials: "include"
+                })
+                if (!res.ok) {
+                    throw new Error('Request Failed')
+                }
+                const data = await res.json()
+                setPromotions(data.result || [])
+                // Handle the response if needed
+            } catch (error) {
+                console.error(error)
+                alert(`Error: ${error.message}`)
+                setPromotions([])
+            }
+        }
+        fetchPromotions()
+    }, [room.room_no])
 
     async function handleSubmit(e) {
         e.preventDefault()
 
-        const updatedRoom = {
+        let updatedRoom = {
             ...room,
             name: form.name,
             capacity: Number(form.capacity),
-            price: form.price,
+            price: Number(form.price),
         }
 
         const res = await apiFetch(
@@ -31,9 +55,9 @@ export default function StaffRoomCard({ room, setRooms }) {
                 body: JSON.stringify(updatedRoom),
             }
         )
-
+        
         if (!res.ok) throw new Error("Request failed")
-
+        updatedRoom.price = Number(form.price*100)
         setRooms(prev =>
             prev.map(r =>
                 r.room_no === room.room_no ? updatedRoom : r
@@ -60,7 +84,31 @@ export default function StaffRoomCard({ room, setRooms }) {
             throw new Error('Request Failed')
         }
     }
-    
+    async function handleAddPromotion(e){
+        e.preventDefault()
+        const promoName = prompt("Enter Promotion Name:")
+        if (!promoName) {
+            alert("Promotion name is required.")
+            return
+        }
+        try {
+            const res = await apiFetch(`http://localhost:3000/rooms/${room.room_no}/promotions`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ name: promoName })
+            })
+            if (!res.ok) {
+                throw new Error('Request Failed')
+            }
+            const data = await res.json()
+            setPromotions(prev => [...prev, data.result])
+        }
+        catch(error){
+            console.error(error)
+            throw new Error('Request Failed')
+        }
+    }
     async function handleDelete(e){
         e.preventDefault()
 
@@ -121,10 +169,13 @@ export default function StaffRoomCard({ room, setRooms }) {
                     </>
                 ) : (
                     <>
-                        <RoomCardBase room={room} />
+                        <RoomCardBase key={room.room_no} room={room} />
 
                         <button onClick={updateAvailability} style={style.button}>
                             {availability ? "Available" : "Not Available"}
+                        </button>
+                        <button onClick={handleAddPromotion} style={style.button}>
+                            Add Promotion
                         </button>
                         <button onClick={() => setIsEditing(true)} style={style.button}>
                             Edit Room
@@ -134,6 +185,16 @@ export default function StaffRoomCard({ room, setRooms }) {
                         </button>
                     </>
                 )}
+                <div style={{marginTop:'20px'}}>
+                    <h3>Promotions:</h3>
+                    {promotions.length > 0 ? (
+                        promotions.map(promo => (
+                            <PromotionCard key={promo.id} promotion={promo} room={room} setPromotions={setPromotions} />
+                        ))
+                    ) : (
+                        <p>No promotions available.</p>
+                    )}
+                </div>
             </div>
 
             <div style={style.rightColumn}>

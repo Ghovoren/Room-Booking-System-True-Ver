@@ -1,5 +1,6 @@
 import { 
     getAccountById,
+    getAccountByAccountId,
     getAccountByName,
     getAccountByEmail,
     updateAccount,
@@ -71,6 +72,15 @@ export async function getAllUsers(filters){
 export async function getUserById (id) {
     try {
         const user = await getAccountById(id)
+        return user
+    } catch (error) {
+        throw new Error(`Error Fetching User: ${error.message}`)
+    }
+}
+
+export async function getUserByAccountId (accountId) {
+    try {
+        const user = await getAccountByAccountId(accountId)
         return user
     } catch (error) {
         throw new Error(`Error Fetching User: ${error.message}`)

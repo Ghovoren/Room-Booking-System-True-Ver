@@ -8,7 +8,7 @@ import {
     getBookingById,
     removeBooking,
     getBookingsByUserId,
-    getDiscountByCode
+    getDiscountById
 } from '../config/database.js'
 import { depositBalance, withdrawBalance } from '../users/user-service.js'
 import { checkOverlap, checkRoom, checkUser } from './booking-data-validations.js'
@@ -27,9 +27,9 @@ export async function bookRoom(filters){
         if (!validUser){
             throw new Error('User does not exist or not allowed to book')
         }
-        const discount = await getDiscountByCode(filters.promoCode)
-        if (filters.promoCode && !discount){
-            throw new Error('Invalid Promo Code')
+        const discount = await getDiscountById(filters.promoId)
+        if (filters.promoId && !discount){
+            throw new Error('Invalid Promo Id')
         }
         filters.totalCost = getTotalCost(filters.startDate,filters.endDate,validRoom, discount)
         if (filters.totalCost > validUser.balance){
@@ -103,9 +103,11 @@ export async function getBookingsWithUserId (userId) {
 
 export async function cancelBooking(id) {
     try {
-        const booking = getBookingById(id)
-        const now = new Date()
-        if (booking.start_date < now){
+        const booking = await getBookingById(id)
+        const now = Date.now()
+        const bookingDate = new Date(booking.start_date).getTime()
+        console.log(bookingDate, now)
+        if (bookingDate < now){
             throw new Error('Cannot cancel Bookings from the past')
         }
         const result = await removeBooking(booking)

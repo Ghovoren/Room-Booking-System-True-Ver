@@ -3,6 +3,7 @@ import {
     updateUser,
     deleteUser,
     getUserById,
+    getUserByAccountId,
     depositBalance,
     withdrawBalance,
     updateUserPassword
@@ -16,17 +17,19 @@ import { normalizeEmail, validateName, validatePhone, validatePassword, normaliz
 
 export async function createNewUserController (req, res){
     try{
-        const { publicId, name, email, password, phone, balance, role} = req.body
-        publicId = normalizeUserId(publicId)
+
+        const { name, email, password, phone, balance, role} = req.body
         validateName(name)
-        validatePassword(password)
+        //validatePassword(password)
         if(phone) validatePhone(phone)
         if(role) validateRole(role)
         const normalizedBalance = normalizeAmountIntoCents(balance)
         const normalizedEmail = normalizeEmail(email)
-        const result = await registerUser(publicId, name, normalizedEmail, password, phone || null, normalizedBalance, role)
+        const result = await registerUser(name, normalizedEmail, password, phone || null, normalizedBalance, role)
         if (result.affectedRows = 1){
-            return res.status(200).json({message:"User Registered", result: result})
+            const newUser = await getUserByAccountId(result.insertId)
+            console.log(newUser)
+            return res.status(200).json({message:"User Registered", result: newUser})
         }
         return res.status(500).json({message:"Error Registering"})
     }

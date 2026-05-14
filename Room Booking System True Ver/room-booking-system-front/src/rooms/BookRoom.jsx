@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { style } from "./style";
 import { useAuth } from "../auth/AuthContext";
 import { useParams } from "react-router-dom";
 import { apiFetch } from "../auth/ApiFetch";
 import { useNavigate } from "react-router-dom";
+
 
 export default function BookRoom() {
     const { user } = useAuth()
@@ -12,6 +13,30 @@ export default function BookRoom() {
     const [start, setStart] = useState("08:00");
     const [end, setEnd] = useState("10:00");
     const navigate = useNavigate()
+    const [promoId, setPromoId] = useState('')
+    const [promotions, setPromotions] = useState([])
+
+    useEffect(() => {
+        const fetchPromotions = async () => {
+            try {
+                const res = await apiFetch(`http://localhost:3000/rooms/${roomNo}/promotions`, {
+                    method: "GET",
+                    credentials: "include"
+                })
+                if (!res.ok) {
+                    throw new Error('Request Failed')
+                }
+                const data = await res.json()
+                setPromotions(data.result || [])
+                // Handle the response if needed
+            } catch (error) {
+                console.error(error)
+                alert(`Error: ${error.message}`)
+                setPromotions([])
+            }
+        }
+        fetchPromotions()
+    }, [roomNo])
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -24,8 +49,10 @@ export default function BookRoom() {
         const booking = {
             startDate : `${date}T${start}`,
             endDate : `${date}T${end}`,
-            roomNo : roomNo
+            roomNo : roomNo,
+            promoId: promoId
         }; 
+        console.log(booking)
         const res = await apiFetch('http://localhost:3000/bookings/',
             {
                 method: "POST",
@@ -77,7 +104,18 @@ export default function BookRoom() {
                     onChange={(e) => setEnd(e.target.value)}
                     required
                 />
-
+                <label> Promotion </label>
+                <select
+                    value={promoId}
+                    onChange={(e) => setPromoId(e.target.value)}
+                >   
+                    <option value=''>None</option>
+                    {promotions.map((promo) => (
+                        <option key={promo.id} value={promo.id}>
+                            {promo.name} ({promo.discount}% off)
+                        </option>
+                    ))}
+                </select>
                 <button type="submit">
                     Confirm Booking
                 </button>

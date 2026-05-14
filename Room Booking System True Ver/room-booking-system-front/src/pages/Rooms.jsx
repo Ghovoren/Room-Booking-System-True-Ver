@@ -48,7 +48,7 @@ export default function Rooms() {
       ))}
       {user?.role ==='staff' || user?.role === 'admin' ? (
         <>
-          {showForm && <RoomCardForm onCreate={handleAddRoom}/>}
+          {showForm && <RoomCardForm onCreate={handleAddRoom} onCancel={() => setShowForm(false)} />}
           <button onClick={() => setShowForm(prev => !prev)}>
             Create New Room
           </button>

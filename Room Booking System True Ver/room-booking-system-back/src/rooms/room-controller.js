@@ -6,7 +6,8 @@ import {
     getRoomWithName,
     getRoomsAvailable,
     editRoom,
-    updateRoomAvailability
+    updateRoomAvailability,
+    getRoomPromotions
 } from './room-service.js'
 
 import { validateName, normalizeOperational, normalizeCapacity } from './room-data-validations.js'
@@ -165,6 +166,21 @@ export async function getAvailableRoomsController(req, res){
         const result = await getRoomsAvailable(filters)
         if (!result){
             return res.status(400).json({message:'No Rooms Available'})
+        }
+        return res.status(200).json({result: result || []})
+    }
+    catch(error){
+        console.error(error)
+        res.status(500).json({message:'Error Fetching Data'})
+    }
+}
+
+export async function getRoomPromotionsController(req, res){
+    try{
+        const id = normalizeId(req.params.id)
+        const result = await getRoomPromotions(id)
+        if (!result){
+            return res.status(400).json({message:'No Promotions for this Room'})
         }
         return res.status(200).json({result: result || []})
     }

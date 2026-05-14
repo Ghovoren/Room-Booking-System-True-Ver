@@ -2,8 +2,9 @@ import express from 'express'
 import {
     createPromotionController,
     removePromotionController,
-    getPromotionByNameController,
-    updatePromotionController
+    getPromotionByIdController,
+    updatePromotionController,
+    getAllPromotionsController
 } from './promotion-controller.js'
 
 
@@ -14,9 +15,9 @@ const router = express.Router()
 
 router.use(protect)
 router.post('/', createPromotionController)
-router.delete('/:promoCode', staffAuthorization, removePromotionController)
-router.get('/:promoCode', getPromotionByNameController)
-router.put('/:promoCode', staffAuthorization, updatePromotionController)
+router.delete('/:promoId', staffAuthorization, removePromotionController)
+router.get('/:promoId', getPromotionByIdController)
+router.put('/:promoId', staffAuthorization, updatePromotionController)
 router.get('/', getAllPromotionsController)
 
 

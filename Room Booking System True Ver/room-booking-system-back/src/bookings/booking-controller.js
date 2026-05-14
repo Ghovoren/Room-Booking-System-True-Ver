@@ -14,7 +14,7 @@ import { normalizeDate } from './booking-data-validations.js'
 export async function bookRoomController(req, res) {
     try {
         let userId = req.user.publicId
-        let { startDate, endDate, roomNo , promoCode} = req.body
+        let { startDate, endDate, roomNo , promoId} = req.body
         if (!userId || !startDate || !endDate || !roomNo){
             return res.status(400).json({message:"Error Registering: Invalid Data"})
         }
@@ -27,8 +27,8 @@ export async function bookRoomController(req, res) {
         filters.roomNo = roomNo
         userId = normalizeUserId(userId)
         filters.userId = userId
-        if (promoCode) {
-            filters.promoCode = promoCode
+        if (promoId) {
+            filters.promoId = promoId
         }
         await bookRoom(filters)
         return res.status(200).json({message:'Booking Created'})
@@ -78,8 +78,7 @@ export async function getAllBookingsController (req, res){
 export async function cancelBookingController(req, res){
     try{
         const id = normalizeId(req.params.id)
-        const [booking] = await getBookingWithId(id)
-        const result = await removeBooking(booking)
+        const result = await cancelBooking(id)
         return res.status(200).json({result: result})
     }
     catch(error){

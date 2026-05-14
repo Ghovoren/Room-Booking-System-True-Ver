@@ -1,64 +1,56 @@
 import { useEffect, useState } from "react";
-import UsersCard from "../components/UsersCard";
+import PromotionsCard from "../components/PromotionsCard.jsx";
 import { apiFetch } from "../auth/ApiFetch.jsx"
-import { style } from "../components/UsersCard.jsx";
+import { style } from "../components/PromotionsCard.jsx";
 
-export default function Users() {
-  const [users, setUsers] = useState([]);
+export default function Promotions() {
+  const [promotions, setPromotions] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
-    const fetchUsers = async() => {
+    const fetchPromotions = async() => {
       try{
-        const res = await apiFetch("http://localhost:3000/users", {
+        const res = await apiFetch("http://localhost:3000/promotions", {
           credentials: "include"
         })
         if(!res.ok){
           throw new Error('Request Failed')
         }  
         const data = await res.json()
-        setUsers(data.result || [])
+        setPromotions(data.result || [])
       }
       catch(error) {
           console.error(error)
           alert(`Error: ${error.message}`)
-          setUsers([])
+          setPromotions([])
       }
     }
-    fetchUsers()
+    fetchPromotions()
   }, []);
 
   const [form, setForm] = useState({
       name: "",
-      email: "",
-      password: "",
-      phone: "",
-      balance: "",
-      role: "student"
+      discount: 0
   });
 
   const handleSubmit = async (e) => {
       e.preventDefault()
       try{
           console.log(form)
-          const res = await apiFetch("http://localhost:3000/users", {
+          const res = await apiFetch("http://localhost:3000/promotions", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               credentials: "include",
               body: JSON.stringify(form)
           })
-          console.log(res)
           if (!res.ok) {
               throw new Error('Request Failed')
           }
           const data = await res.json()
-          setUsers(prev => [...prev, data.result])
+          setPromotions(prev => [...prev, data.result])
           setForm({
               name: "",
-              email: "",
-              password: "",
-              phone: "",
-              balance: "",
+              discount: 0,
               role: "student"
           })
           setIsAdding(false)
@@ -71,7 +63,7 @@ export default function Users() {
 
   const handleDelete = async (id) => {
         try{
-            const res = await apiFetch(`http://localhost:3000/users/${id}`,
+            const res = await apiFetch(`http://localhost:3000/promotions/${id}`,
                 {
                     method: "DELETE",
                     credentials: "include"
@@ -80,26 +72,46 @@ export default function Users() {
             if (!res.ok){
                 throw new Error('Request Failed')
             }   
-            setUsers(prev => prev.filter(user => user.account_id !== id));
+            setPromotions(prev => prev.filter(promotion => promotion.id !== id));
         }
         catch(error){
             alert(`Error: ${error.message}`)
             throw new Error('Error Request Failed')
             
-        } 
+        }
+    }
+    const handleEdit = async (id, updatedPromotion) => {
+        try{
+            const res = await apiFetch(`http://localhost:3000/promotions/${id}`,
+                {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(updatedPromotion)
+                }
+            )
+            if (!res.ok){
+                throw new Error('Request Failed')
+            }
+            setPromotions(prev => prev.map(p => p.id === id ? updatedPromotion : p))
+        }
+        catch(error){
+            alert(`Error: ${error.message}`)
+            throw new Error('Error Request Failed')
+        }
     }
 
   return (
     <div>
-      <h1>All Users</h1>
-      {users.map((user) => (
-        <UsersCard key={user.account_id} user={user} onDelete={handleDelete}/>
+      <h1>All Promotions</h1>
+      {promotions.map((promotion) => (
+        <PromotionsCard key={promotion.id} promotion={promotion} onDelete={handleDelete} onEdit={handleEdit} />
       ))}
       {isAdding ? (
         <>
           <form onSubmit={handleSubmit} style={style.card}>
             <div>
-              <label>Name</label>
+              <label>Promotion Name</label>
               <input
                   value={form.name}
                   onChange={(e) =>
@@ -108,51 +120,14 @@ export default function Users() {
               />
             </div>
             <div>
-              <label>Email</label>
+              <label>Discount</label>
               <input
-                  value={form.email}
+                  value={form.discount}
                   onChange={(e) =>
-                      setForm({ ...form, email: e.target.value })
+                      setForm({ ...form, discount: e.target.value })
                   }
               />
             </div>
-            <div>
-              <label>Password</label>
-              <input
-                  value={form.password}
-                  onChange={(e) =>
-                      setForm({ ...form, password: e.target.value })
-                  }
-              />
-            </div>
-            <div>
-              <label>Phone</label>
-              <input
-                  value={form.phone}
-                  onChange={(e) =>
-                      setForm({ ...form, phone: e.target.value })
-                  }
-              />
-            </div>
-            <div>
-              <label>Balance $</label>
-              <input
-                  value={form.balance}
-                  onChange={(e) =>
-                      setForm({ ...form, balance: e.target.value })
-                  }
-              />
-            </div>
-            <div>
-              <label>Role</label>
-              <input
-                  value={form.role}
-                  onChange={(e) =>
-                      setForm({ ...form, role: e.target.value })
-                  }
-              />
-            </div>
-            <div></div>
             <div><button type="submit">Confirm</button></div>
             <div>
                 <button type="button" onClick={() => setIsAdding(false)}>Cancel</button>
@@ -162,7 +137,7 @@ export default function Users() {
       ) : (
         <>
             <button onClick={() => setIsAdding(true)} style={style.button}>
-                Add User
+                Create New Promotion
             </button>
         </>
       )}

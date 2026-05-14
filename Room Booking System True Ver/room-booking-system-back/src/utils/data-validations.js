@@ -52,11 +52,17 @@ export function validatePromotionName(promotionName){
 
 export function normalizeDiscount(discount){
     try{
-        const num = Number(discount.replace('%',''))
-        if (!Number.isFinite(num) || num < 0 || num > 100) {
+        if (discount === undefined || discount === null) {
+            throw new Error('Discount is required')
+        }
+        if (typeof discount === 'string') {
+            discount = discount.trim()
+            discount = Number(discount.replace('%',''))
+        }
+        if (!Number.isFinite(discount) || discount < 0 || discount > 100) {
             throw new Error('Discount must be a number between 0 and 100')
         }
-        return num
+        return discount
     }
     catch(error){
         throw new Error(`Data Validation Error: ${error.message}`)

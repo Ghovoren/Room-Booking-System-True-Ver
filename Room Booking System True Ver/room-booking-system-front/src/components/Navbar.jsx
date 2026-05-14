@@ -33,7 +33,10 @@ export default function Navbar() {
             <Link to="/bookings" style={styles.link}>Bookings</Link>
 
             {(user.role === "admin" || user.role === "staff") && (
-              <Link to="/users" style={styles.link}>Users</Link>
+              <>
+                <Link to="/users" style={styles.link}>Users</Link>
+                <Link to="/promotions" style={styles.link}>Promotions</Link>
+              </>
             )}
           </>
         )}

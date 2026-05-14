@@ -9,6 +9,13 @@ import {
     updateRoomAvailabilityController
 } from './room-controller.js'
 
+import {
+    getRoomPromotionsController,
+    applyPromotionController,
+    removePromotionController,
+    updatePromotionController
+} from './room-promo-controller.js'
+
 
 import { protect } from '../auth/authentication.js'
 import { staffAuthorization, userAuthorization } from '../auth/authorization.js'
@@ -23,6 +30,10 @@ router.put('/:id/availability', staffAuthorization, updateRoomAvailabilityContro
 router.put('/:id' , staffAuthorization, updateRoomController)
 router.delete('/:id', staffAuthorization, deleteRoomController)
 router.get('/:id' ,staffAuthorization, getRoomByIdController)
+router.post('/:id/promotions', staffAuthorization, applyPromotionController)
+router.delete('/:id/promotions/:promoId', staffAuthorization, removePromotionController)
+router.put('/:id/promotions/:promoId', staffAuthorization, updatePromotionController)
+router.get('/:id/promotions', getRoomPromotionsController)
 
 
 export default router

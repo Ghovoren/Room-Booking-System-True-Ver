@@ -159,3 +159,14 @@ export async function getRoomsAvailable(filters){
     }
 }
 
+export async function getRoomPromotions(roomId){
+    try{
+        const query = "SELECT p.promotion, p.discount FROM promo_codes p JOIN room_promo rp ON p.promotion = rp.promo WHERE rp.room_no = ?"
+        const params = [roomId]
+        const result = await dbQuery(query, params)
+        return result
+    }
+    catch(error){
+        throw new Error(`Error Fetching Room Promotions: ${error.message}`)
+    }
+}

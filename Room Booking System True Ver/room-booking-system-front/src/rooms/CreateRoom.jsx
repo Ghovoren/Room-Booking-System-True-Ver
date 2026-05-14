@@ -3,7 +3,7 @@ import RoomCardBase from "./RoomCardBase.jsx";
 import {style} from "./style.jsx"
 import { apiFetch } from "../auth/ApiFetch.jsx";
 
-export default function RoomCardForm({ onCreate }) {
+export default function RoomCardForm({ onCreate, onCancel }) {
     const [form, setForm] = useState({
         name: "",
         capacity: "",
@@ -68,6 +68,9 @@ export default function RoomCardForm({ onCreate }) {
                         </div>
                         <div>
                             <button type="submit">Create Room</button>
+                            <button type="button" onClick={onCancel}>
+                                Cancel
+                            </button>
                         </div>
                     </form>
                 </>

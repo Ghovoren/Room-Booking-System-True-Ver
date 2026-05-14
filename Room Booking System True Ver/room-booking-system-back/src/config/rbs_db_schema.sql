@@ -3,6 +3,9 @@ USE room_booking_system;
 DROP TABLE IF EXISTS booking;
 DROP TABLE IF EXISTS account;
 DROP TABLE IF EXISTS room;
+DROP TABLE IF EXISTS promo_codes;
+DROP TABLE IF EXISTS room;
+DROP TABLE IF EXISTS room_promo;
 
 
 CREATE TABLE account
@@ -59,7 +62,7 @@ CREATE TABLE booking
 CREATE TABLE promo_codes
 (
 	id INTEGER AUTO_INCREMENT NOT NULL,
-    promotion VARCHAR(255) NOT NULL,
+    promotion_name VARCHAR(255) NOT NULL,
     discount INTEGER NOT NULL,
     CONSTRAINT promo_pk PRIMARY KEY (id),
     CONSTRAINT promo_ck1 UNIQUE (promotion),
@@ -74,6 +77,13 @@ CREATE TABLE room_promo
     CONSTRAINT room_promo_fk1 FOREIGN KEY (room_no) REFERENCES room(room_no),
     CONSTRAINT room_promo_fk2 FOREIGN KEY (promo) REFERENCES promo_codes(id)
 );
+
+ALTER TABLE promo_codes
+ADD CONSTRAINT check_discount
+CHECK(discount <= 100 AND discount >= 0) ;
+
+CREATE VIEW user_info AS SELECT id, account_id, name, email, phone, balance, role FROM account
+
 -- Book Room
 -- INSERT INTO booking VALUES(refNo,cost,bookedDate,roomNo,userId);
 -- UPDATE account SET balance = balance - cost WHERE user_id = userId ;

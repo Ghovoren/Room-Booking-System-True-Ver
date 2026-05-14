@@ -16,7 +16,7 @@ export default function UsersCard({user, onDelete}){
         </div>
     )
 }
-const style = {
+export const style = {
     card: {
         border: "2px solid",
         display: "grid",

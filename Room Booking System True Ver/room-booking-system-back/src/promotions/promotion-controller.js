@@ -1,26 +1,26 @@
 import {
-    bookRoom,
-    cancelBooking,
-    getAllBookings,
-    getBookingsWithUserId,
-    getBookingWithId
+    getAllPromotions,
+    addPromotion,
+    getPromotionById,
+    editPromotion,
+    deletePromotion
 } from './promotion-service.js'
 
-import { removePromotion } from '../config/database.js'
+import { validatePromotionName, normalizeDiscount } from '../utils/data-validations.js'
 
 export async function createPromotionController(req, res) {
     try {
-        let { promoName, discount } = req.body
-        if (!promoName || !discount){
+        let { name, discount } = req.body
+        if (!name || !discount){
             return res.status(400).json({message:"Error Registering: Invalid Data"})
         }
         const filters = {}
-        validatePromotionName(promoName)
-        filters.promoName = promoName
+        validatePromotionName(name)
+        filters.name = name
         discount = normalizeDiscount(discount)
         filters.discount = discount
-        await createPromotion(filters)
-        return res.status(200).json({message:'Promotion Created'})
+        const result = await addPromotion(filters)
+        return res.status(200).json({message:'Promotion Created', result: result})
     } catch (error) {
         console.error(error)
       return res.status(500).json({message:'Error Registering'})
@@ -29,66 +29,52 @@ export async function createPromotionController(req, res) {
 
 export async function getAllPromotionsController (req, res){
     try{
-        let { startDate, endDate, minTotalCost, maxTotalCost, roomNo, userId } = req.query
-        const filters = {}
-        if (startDate) {
-            startDate = normalizeDate(startDate)
-            filters.startDate = startDate
-        }
-        if (endDate) {
-            endDate = normalizeDate(endDate)
-            filters.endDate = endDate
-        }
-        if (minTotalCost) {
-            minTotalCost = normalizeAmountIntoCents(minTotalCost)
-            filters.minTotalCost = minTotalCost
-        }
-        if (maxTotalCost) {
-            maxTotalCost = normalizeAmountIntoCents(maxTotalCost)
-            filters.maxTotalCost = maxTotalCost
-        }
-        if (roomNo) {
-            roomNo = normalizeId(roomNo)
-            filters.roomNo = roomNo
-        }
-        if (userId) {
-            userId = normalizeUserId(userId)
-            filters.userId = userId
-        }
-        const result = await getAllBookings(filters)
-      return res.status(200).json({result: result})
-    }
-    catch(error){
-        console.error(error)
-        return res.status(500).json({message:`Error Fetching Bookings`})
-    }
-}
-
-export async function cancelBookingController(req, res){
-    try{
-        const id = normalizeId(req.params.id)
-        const [booking] = await getBookingWithId(id)
-        const result = await removeBooking(booking)
+        const result = await getAllPromotions()
         return res.status(200).json({result: result})
     }
     catch(error){
         console.error(error)
-        return res.status(500).json({message:`Error Cancelling Booking`})
+        return res.status(500).json({message:`Error Fetching Promotions`})
     }
 }
 
-export async function getBookingsByUserIdController(req, res) {
+export async function removePromotionController(req, res){
     try{
-        const userId = normalizeUserId(req.params.userId)
-        let { } = req.query
-        const result = await getBookingsWithUserId(userId)
+        const id = req.params.promoId
+        const result = await deletePromotion(id)
+        return res.status(200).json({result: result})
+    }
+    catch(error){
+        console.error(error)
+        return res.status(500).json({message:`Error Removing Promotion`})
+    }
+}
+
+export async function getPromotionByIdController(req, res) {
+    try{
+        const id = req.params.promoId
+        const result = await getPromotionById(id)
         if (!result){
-            return res.status(404).json({message:'Booking not Found'})
+            return res.status(404).json({message:'Promotion not Found'})
         }
         return res.status(200).json({result: result || []})
     }
     catch(error){
         console.error(error)
         return res.status(500).json({message:'Error Fetching Data'})
+    }
+}
+
+export async function updatePromotionController(req, res) {
+    try{
+        const id = req.params.promoId
+        let { name, discount } = req.body
+        discount = normalizeDiscount(discount)
+        const result = await editPromotion(id, name, discount)
+        return res.status(200).json({result: result})
+    }
+    catch(error){
+        console.error(error)
+        return res.status(500).json({message:'Error Updating Promotion'})
     }
 }

@@ -5,6 +5,7 @@ import userRoutes from './users/user-routes.js'
 import authRoutes from './auth/auth-routes.js'
 import roomRoutes from './rooms/room-routes.js'
 import bookingRoutes from './bookings/booking-routes.js'
+import promotionRoutes from './promotions/promotion-routes.js'
 
 try{
     
@@ -27,6 +28,7 @@ try{
     app.use('/users', userRoutes)
     app.use('/rooms', roomRoutes)
     app.use('/bookings',bookingRoutes)
+    app.use('/promotions', promotionRoutes)
 
     app.use((req, res) => {
         res.status(404).send('Not Found')
